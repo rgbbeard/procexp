@@ -100,7 +100,7 @@ class TaskManager {
 	}
 
 	public static function restart_process(int $pid) {
-		shell_exec("kill -HUP $pid");
+		shell_exec("kill -1 $pid");
 	}
 }
 ?>
