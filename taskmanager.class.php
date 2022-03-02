@@ -14,7 +14,7 @@ function contains($target, string $container) {
 
 class TaskManager {
 	protected const ps_cmd = "ps -Aef";
-	public $processes_headers = ["uid", "pid", "ppid", "%cpu", "start time", "tty", "time", "command"];
+	public $processes_headers = ["user", "pid", "ppid", "%cpu", "start time", "tty", "time", "command"];
 
 	public function get_active_processes() {
 		$processes = shell_exec($this::ps_cmd);
@@ -66,7 +66,7 @@ class TaskManager {
 
 	public static function process_is_daemon(array $process_info) {
 		$ppid = @$process_info["ppid"];
-		$uid = @$process_info["uid"];
+		$uid = @$process_info["user"];
 
 		return intval($ppid) === 1 || contains("systemd", $uid);
 	}
@@ -83,14 +83,14 @@ class TaskManager {
 		return intval($ppid) === 0;
 	}
 
-	public static function process_is_root(array $process_info) {
-		$uid = @trim(strval($process_info["uid"]));
+	public static function process_by_root(array $process_info) {
+		$uid = @trim(strval($process_info["user"]));
 
 		return $uid === "root";
 	}
 
-	public static function process_is_user(array $process_info) {
-		$uid = @trim(strval($process_info["uid"]));
+	public static function process_by_user(array $process_info) {
+		$uid = @trim(strval($process_info["user"]));
 
 		return $uid === get_user();
 	}
