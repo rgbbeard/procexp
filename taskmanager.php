@@ -12,10 +12,40 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 		<title>Task Manager</title>
 		<link rel="shortcut icon" href="img/icon.png">
 		<style type="text/css">
+			:root {
+				--row-highlight-color: #ccbb00;
+				--row-highlight-outline: solid 1px #000;
+				--row-highlight-filter: brightness(130%);
+				--is-vital-color: #ebe;
+				--is-daemon-color: #dfdfdf;
+				--is-system-color: #77ccff;
+				--by-root-color: #5dc;
+				--by-user-color: #ea8;
+				--column-padding: 3px 7px;
+				--default-border-radius: 5px;
+				--red-color-1: #c00;
+			}
+
 			* {
 				box-sizing: border-box;
 				font-size: 13px;
 				font-family: "Calibri", sans-serif;
+			}
+
+			.is_vital {
+				background-color: var(--is-vital-color);
+			}
+
+			.is_daemon {
+				background-color: var(--is-daemon-color);
+			}
+
+			.is_system {
+				background-color: var(--is-system-color);
+			}
+
+			.is_ordinary {
+				background-color: #fff;
 			}
 
 			html, body {
@@ -53,10 +83,11 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 				position: fixed;
 				right: 30px;
 				padding: 8px 10px;
-				background-color: #c00;
+				background-color: var(--red-color-1);
 				color: #fff;
 				cursor: pointer;
 				font-size: 16px;
+				border-radius: var(--default-border-radius);
 			}
 
 			#scrolltop {
@@ -95,106 +126,67 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 				color: #000;
 			}
 
-			table thead {
-				position: sticky;
-				top: 30px;
-				background-color: #940;
-				color: #fff;
-				z-index: 99999;
-			}
-
 			table {
 				border-collapse: collapse;
 			}
 
+			table thead {
+				position: sticky;
+				top: 30px;
+				background-color: var(--red-color-1);
+				color: #fff;
+				z-index: 99999;
+			}
+
 			table tr {
 				margin: 2px 0;
-				position: relative;
 			}
 
-			table tr:not(.is_user, .is_root)::after {
-				content: "";
-			}
-
-			table tr::after {
-				display: inline-block;
-				position: absolute;
-				top: 0;
-				left: 0;
-				bottom: 0;
-				width: 80px;
-				padding: 3px 7px;
-				line-height: 30px;
-				color: #fff;
-			}
-
-			table tr:hover::after {
-				opacity: 0;
+			table tbody tr:hover,
+			table tbody tr.selected {
+				/*background-color: var(--row-highlight-color) !important;*/
+				outline: var(--row-highlight-outline);
+				filter: var(--row-highlight-filter);
 			}
 
 			table tr td {
-				padding: 3px 7px;
 				width: 10%;
+				padding: var(--column-padding);
 			}
 
-			table tr:hover {
-				background-color: #0055ff44;
+			table tr.by_root td:first-child {
+				font-weight: bold;
 			}
 
-			table tr input {
+			table tr td input {
 				display: inline-block;
 				user-select: none;
 				-moz-user-select: none;
 				-webkit-user-select: none;
-				width: 40px;
+				width: 30px;
 				background-position: center center;
-				background-size: 50%;
+				background-size: 40%;
 				background-repeat: no-repeat;
+				border-radius: var(--default-border-radius);
 			}
 
-			table tr input.restart-btn {				
+			table tr td input.restart-btn {				
 				background-image: url("img/reload.png");
 			}
 
-			table tr input.kill-btn {				
+			table tr td input.kill-btn {				
 				background-image: url("img/kill.png");
 			}
 
-			table tr input.kill-btn:hover {
+			table tr td input.kill-btn:hover {
 				background-color: #c00;
 				color: #fff;
 			}
 
-			table tr input.restart-btn:hover {
+			table tr td input.restart-btn:hover {
 				background-color: #f90;
 				color: #fff;
 
-			}
-
-			.is_daemon {
-				background-color: #66666644;
-			}
-
-			.is_system {
-				background-color: #6600aa44;
-			}
-
-			.is_vital {
-				background-color: #aa550044;
-			}
-
-			.is_ordinary {
-				background-color: #fff;
-			}
-
-			table tr.is_root::after {
-				content: "root" !important;
-				background-color: #0a6;
-			}
-
-			table tr.is_user::after {
-				content: "<?php echo get_user();?>" !important;
-				background-color: #ca0;
 			}
 		</style>
 	</head>
@@ -297,10 +289,10 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 							$process_classes[] = "is_ordinary";
 						}
 
-						if(TaskManager::process_is_root($process)) {
-							$process_classes[] = "is_root";
-						} elseif(TaskManager::process_is_user($process)) {
-							$process_classes[] = "is_user";
+						if(TaskManager::process_by_root($process)) {
+							$process_classes[] = "by_root";
+						} elseif(TaskManager::process_by_user($process)) {
+							$process_classes[] = "by_user";
 						}
 
 						$process_classes = implode(" ", $process_classes);
@@ -342,7 +334,18 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 </html>
 <script type="text/javascript">
 	window.onload = function() {
-		let timeout = 59, display = document.getElementById("refresh-display");
+		let
+			timeout = 59,
+			display = document.getElementById("refresh-display"),
+			scrolltop = document.getElementById("scrolltop"),
+			scrolldown = document.getElementById("scrolldown"),
+			rows = document.querySelectorAll("table tbody tr");
+		rows.forEach(r => {
+			r.onclick = function() {
+				rows.forEach(i => i.classList.remove("selected"));
+				r.classList.add("selected");
+			};
+		});
 		setInterval(function() {
 			display.textContent = timeout;
 			timeout--;
@@ -350,10 +353,10 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 		setTimeout(function() {
 			window.location.href = "http://localhost:9010/taskmanager.php";
 		}, timeout*1000);
-		document.getElementById("scrolltop").onclick = function() {
+		scrolltop.onclick = function() {
 			window.scrollTo(0, 0);
 		};
-		document.getElementById("scrolldown").onclick = function() {
+		scrolldown.onclick = function() {
 			window.scrollTo(0, document.documentElement.scrollHeight);
 		};
 	};
