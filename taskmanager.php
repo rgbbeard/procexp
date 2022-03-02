@@ -15,7 +15,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 			:root {
 				--row-highlight-color: #ccbb00;
 				--row-highlight-outline: solid 1px #000;
-				--row-highlight-filter: brightness(130%);
+				--row-highlight-filter: brightness(95%);
 				--is-vital-color: #ebe;
 				--is-daemon-color: #dfdfdf;
 				--is-system-color: #77ccff;
@@ -114,6 +114,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 				border: solid 1px #ccc;
 				padding: 4px 8px;
 				outline: none !important;
+				border-radius: var(--default-border-radius);
 			}
 
 			input:not([type="checkbox"]):focus {
@@ -144,7 +145,6 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 
 			table tbody tr:hover,
 			table tbody tr.selected {
-				/*background-color: var(--row-highlight-color) !important;*/
 				outline: var(--row-highlight-outline);
 				filter: var(--row-highlight-filter);
 			}
@@ -167,7 +167,6 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 				background-position: center center;
 				background-size: 40%;
 				background-repeat: no-repeat;
-				border-radius: var(--default-border-radius);
 			}
 
 			table tr td input.restart-btn {				
@@ -201,7 +200,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 					<b>Processes found: <?php echo sizeof($active_processes);?></b>
 				</span>
 				<span>
-					<b>Refreshing in: <i id="refresh-display">60</i>s</b>
+					<b>Refreshing in: <i id="refresh-display">120</i>s</b>
 				</span>
 			</div>
 			<table width="100%">
@@ -231,32 +230,6 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 						<a href=\"http://localhost:9010/taskmanager.php\">Clear filters</a>
 					</div>";
 				}
-
-				if(isset($_POST["search"])) {
-					if(!empty(trim($_POST["search-process"]))) {
-						$params[] = "pn=" . base64_encode($_POST["search-process"]);
-					}
-
-					if(isset($_POST["filter_vital"]) || isset($_POST["filter_system"]) || isset($_POST["filter_daemon"])) {
-						$filters = [];
-
-						if(!is_null($_POST["filter_vital"])) {
-							$filters[] = $_POST["filter_vital"];
-						}
-
-						if(!empty($_POST["filter_daemon"])) {
-							$filters[] = $_POST["filter_daemon"];
-						}
-
-						if(!empty($_POST["filter_system"])) {
-							$filters[] = $_POST["filter_system"];
-						}
-
-						$params[] = "filters=" . base64_encode(implode(";", $filters));
-					}
-
-					header("Location: http://localhost:9010/taskmanager.php?" . implode("&", $params));
-				}
 				?>
 				<br>
 				<br>
@@ -276,7 +249,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 						$process_classes = [];
 						$pid = $process["pid"];
 						$kill_input_name = "kpid-$pid";
-						$kill_input_name = "rpid-$pid";
+						$restart_input_name = "rpid-$pid";
 						$row_color = "";
 
 						if(TaskManager::process_is_vital($process)) {
@@ -312,7 +285,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 							
 						echo "<td>
 								<input class=\"kill-btn\" type=\"submit\" name=\"$kill_input_name\" value=\"\" title=\"Kill process\">
-								<input class=\"restart-btn\" type=\"submit\" name=\"$restart_input_name\" value=\"\" title=\"Restart process\">
+								<!--input class=\"restart-btn\" type=\"submit\" name=\"$restart_input_name\" value=\"\" title=\"Restart process\"-->
 							</td>
 						</tr>";
 
@@ -335,29 +308,78 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 <script type="text/javascript">
 	window.onload = function() {
 		let
-			timeout = 59,
+			timeout = 119,
 			display = document.getElementById("refresh-display"),
 			scrolltop = document.getElementById("scrolltop"),
 			scrolldown = document.getElementById("scrolldown"),
-			rows = document.querySelectorAll("table tbody tr");
+			rows = document.querySelectorAll("table tbody tr"),
+			search = document.querySelector('input[name="search"]'),
+			search_process = document.querySelector('input[name="search-process"]'),
+			filter_vital = document.querySelector('input[name="filter_vital"]'),
+			filter_daemon = document.querySelector('input[name="filter_daemon"]'),
+			filter_system = document.querySelector('input[name="filter_system"]');
+
 		rows.forEach(r => {
 			r.onclick = function() {
 				rows.forEach(i => i.classList.remove("selected"));
+
 				r.classList.add("selected");
 			};
 		});
+
 		setInterval(function() {
 			display.textContent = timeout;
 			timeout--;
 		}, 1000);
+
 		setTimeout(function() {
-			window.location.href = "http://localhost:9010/taskmanager.php";
+			window.location.href = "";
 		}, timeout*1000);
+
 		scrolltop.onclick = function() {
 			window.scrollTo(0, 0);
 		};
+
 		scrolldown.onclick = function() {
 			window.scrollTo(0, document.documentElement.scrollHeight);
+		};
+
+		search.onclick = function(e) {
+			if(e == undefined || e == null) {
+				e = window.event;
+			}
+
+			e.preventDefault();
+
+			let params = [];
+
+			if(search_process.value.trim() !== "") {
+				params.push("pn=" + btoa(search_process.value));
+			}
+
+			if(filter_vital.checked || filter_daemon.checked || filter_system.checked) {
+				let filters = [];
+
+				if(filter_vital.checked) {
+					filters.push(filter_vital.value);
+				}
+
+				if(filter_daemon.checked) {
+					filters.push(filter_daemon.value);
+				}
+
+				if(filter_system.checked) {
+					filters.push(filter_system.value);
+				}
+
+				filters = btoa(filters.join(";"));
+			}
+
+			params = params.join("&");
+
+			if(params.trim() !== "") {
+				window.location.href = "http://localhost:9010/taskmanager.php?" + params;
+			}
 		};
 	};
 </script>
