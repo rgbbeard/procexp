@@ -12,6 +12,11 @@
 	--red-color-1: #c00;
 }
 
+::selection {
+	color: #000;
+	background-color: #ff0;
+}
+
 * {
 	box-sizing: border-box;
 	font-size: 13px;
@@ -32,6 +37,17 @@
 
 .is_ordinary {
 	background-color: #fff;
+}
+
+.highlight {
+	display: inline-block;
+	padding: 5px;
+	color: #000;
+	background-color: #ff0;
+}
+
+.highlight::selection {
+	color: #f00;
 }
 
 html, body {
@@ -114,7 +130,6 @@ a {
 }
 
 table {
-	border-collapse: collapse;
 	width: 100%;
 }
 
