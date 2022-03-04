@@ -28,6 +28,13 @@ class TaskManager {
 		foreach($processes as $process) {
 			$process_info = preg_replace("/\s+/", ";", $process);
 			$process_info = explode(";", $process_info);
+
+			if(sizeof($process_info) > sizeof($this->processes_headers)) {
+				for($z = sizeof($this->processes_headers);$z<sizeof($process_info);$z++) {
+					$process_info[sizeof($this->processes_headers)-1] .= " " . $process_info[$z];
+				}
+			}
+
 			$result[$y] = [];
 
 			for($x = 0;$x<sizeof($this->processes_headers);$x++) {
@@ -50,7 +57,14 @@ class TaskManager {
 		$y = 0;
 		foreach($processes as $process) {
 			$process_info = preg_replace("/\s+/", ";", $process);
-			$process_info = explode(";", $process_info);
+			$process_info = explode(";", $process_info);			
+		
+			if(sizeof($process_info) > sizeof($this->processes_headers)) {
+				for($z = sizeof($this->processes_headers);$z<sizeof($process_info);$z++) {
+					$process_info[sizeof($this->processes_headers)-1] .= " " . $process_info[$z];
+				}
+			}
+
 			$result[$y] = [];
 
 			for($x = 0;$x<sizeof($this->processes_headers);$x++) {
@@ -58,6 +72,9 @@ class TaskManager {
 				$pi = $process_info[$x];
 				$result[$y][$ph] = $pi;
 			}
+
+			$result[$y]["command"] = str_replace($process_name, "<span class=\"highlight\">$process_name</span>", $result[$y]["command"]);
+
 			$y++;
 		}
 
