@@ -1,5 +1,20 @@
 window.onload = function() {
+	function isEmpty(t) {
+		t = String(t).trim();
+		return t === "null" || t === "undefined" || t === "";
+	}
+
+	function urlHasParams() {
+		if(window.location.href.includes("?")) {
+			return !isEmpty(window.location.href.split("?")[1]);
+		}
+
+		return false;
+	}
+
 	let
+		dark_mode = window.location.href.split("?")[1]?.includes("dark=true"),
+		html = document.body.parentNode,
 		timeout = 119,
 		display = document.getElementById("refresh-display"),
 		scrolltop = document.getElementById("scrolltop"),
@@ -72,5 +87,26 @@ window.onload = function() {
 		if(params.trim() !== "") {
 			window.location.href = "http://localhost:9010/taskmanager.php?" + params;
 		}
+	};
+
+	if(dark_mode) {
+		this.textContent = "Dark mode";
+		html.classList.add("dark");
+	}
+
+	document.getElementById("btn-mode").onclick = function() {
+		let 
+			url_has_params = urlHasParams();
+			url = "";
+
+		if(!dark_mode) {
+			if(url_has_params) {
+				url = window.location.href + "&dark=true";
+			} else {
+				url = window.location.href + "?dark=true";
+			}
+		}
+
+		window.location.href = url;
 	};
 };
