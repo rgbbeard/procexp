@@ -13,8 +13,8 @@ function contains($target, string $container) {
 }
 
 class TaskManager {
-	protected const ps_cmd = "ps -Aef";
-	public $processes_headers = ["user", "pid", "ppid", "%cpu", "start time", "tty", "time", "command"];
+	protected const ps_cmd = "ps -eF";
+	public $processes_headers = ["user", "pid", "ppid", "%cpu", "sz", "rss", "psr", "start time", "tty", "time", "command"];
 
 	public function get_active_processes() {
 		$processes = shell_exec($this::ps_cmd);
