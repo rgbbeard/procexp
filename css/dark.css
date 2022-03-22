@@ -1,0 +1,41 @@
+:root {
+	--dark-is-vital-color: #848;
+	--dark-is-daemon-color: #6f6f6f;
+	--dark-is-system-color: #5a9;
+	--dark-row-highlight-filter: brightness(130%);
+}
+
+html.dark .is_vital {
+	background-color: var(--dark-is-vital-color);
+}
+
+html.dark .is_daemon {
+	background-color: var(--dark-is-daemon-color);
+}
+
+html.dark .is_system {
+	background-color: var(--dark-is-system-color);
+}
+
+html.dark .is_ordinary {
+	background-color: #3f3f3f;
+}
+
+html.dark {
+	background-color: #2f2f2f;
+	color: #fff;
+}
+
+html.dark #legenda {
+	background-color: #2f2f2f;
+}
+
+html.dark input:not([type="checkbox"]),
+a {
+	border: solid 1px #3f3f3f;
+}
+
+html.dark table tbody tr:hover,
+html.dark table tbody tr.selected {
+	filter: var(--dark-row-highlight-filter);
+}
