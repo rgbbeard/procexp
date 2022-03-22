@@ -12,6 +12,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 		<title>Task Manager</title>
 		<link rel="shortcut icon" href="img/icon.png">
 		<link href="css/main.css" rel="stylesheet">
+		<link href="css/dark.css" rel="stylesheet">
 	</head>
 	<body>
 		<form action="" method="post">
@@ -26,6 +27,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 				<span>
 					<b>Refreshing in: <i id="refresh-display">120</i>s</b>
 				</span>
+				<span id="btn-mode">Dark mode</span>
 			</div>
 			<table>
 				<input type="text" name="search-process" placeholder="Find process" value="<?php echo @empty($_GET["pn"]) ? "" : base64_decode($_GET["pn"]);?>">
