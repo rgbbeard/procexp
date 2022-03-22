@@ -41,7 +41,7 @@
 
 .highlight {
 	display: inline-block;
-	padding: 5px;
+	padding: 5px 0px;
 	color: #000;
 	background-color: #ff0;
 }
@@ -83,13 +83,12 @@ html, body {
 #scrolldown {
 	display: inline-block;
 	position: fixed;
-	right: 30px;
+	right: 5%;
 	padding: 8px 10px;
 	background-color: var(--red-color-1);
 	color: #fff;
 	cursor: pointer;
 	font-size: 16px;
-	border-radius: var(--default-border-radius);
 }
 
 #scrolltop {
@@ -105,8 +104,17 @@ a {
 }
 
 input,
-a {
+a,
+#btn-mode {
 	cursor: pointer;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	border: solid 1px #999;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 input:not([type="checkbox"]),
@@ -116,11 +124,6 @@ a {
 	border: solid 1px #ccc;
 	padding: 4px 8px;
 	outline: none !important;
-	border-radius: var(--default-border-radius);
-}
-
-input:not([type="checkbox"]):focus {
-	background-color: #0055ff22;
 }
 
 input[type="submit"],
@@ -129,13 +132,19 @@ a {
 	color: #000;
 }
 
+input[name="search-process"] {
+	padding: 8px;
+	font-size: 14px;
+	width: 60%;
+	margin: 30px auto 0;
+	display: block;
+}
+
 table {
 	width: 100%;
 }
 
 table thead {
-	position: sticky;
-	top: 30px;
 	background-color: var(--red-color-1);
 	color: #fff;
 	z-index: 99999;
