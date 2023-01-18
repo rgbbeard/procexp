@@ -1,0 +1,1 @@
+python /home/$USER/programs/taskmanager/main.py

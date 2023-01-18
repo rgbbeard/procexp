@@ -3,7 +3,24 @@ require_once "taskmanager.class.php";
 
 $TaskManager = new TaskManager();
 
-$active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() : $TaskManager->find_processes_by_name(base64_decode($_GET["pn"]));
+$active_processes =	$TaskManager->get_active_processes();
+
+$has_params = false;
+
+if(!@empty($_GET["pn"])) {
+	$process_name = base64_decode($_GET["pn"]);
+
+	if(!empty($process_name)) {
+		$has_params = true;
+		$active_processes = $TaskManager->find_processes_by_name($process_name, $active_processes);
+	}
+}
+
+if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
+	header("Location: " . $_SERVER["PHP_SELF"] . (
+		$has_params ? "?pn=" . $_GET["pn"] : ""
+	));
+}
 ?>
 <!doctype html>
 <html>
@@ -53,7 +70,7 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 				if(@!empty($_GET)) {
 					echo "<br>
 					<div>
-						<a href=\"http://localhost:9010/taskmanager.php\">Clear filters</a>
+						<a href=\"http://localhost:10000/taskmanager.php\">Clear filters</a>
 					</div>";
 				}
 				?>
@@ -99,28 +116,29 @@ $active_processes = @empty($_GET["pn"]) ? $TaskManager->get_active_processes() :
 						echo "<tr class=\"$process_classes\">";
 						
 						if(@!empty($_GET["filters"])) {
-							$processes_filters = explode(";", base64_decode($_GET["filters"])); 
+							$processes_filters = explode(";", base64_decode($_GET["filters"]));
+
 							if(!in_array($process["ppid"], $processes_filters)) {
 								continue;
 							}
 						}
 
 						foreach($process as $info) {
-							echo "<td>$info</td>";
+							echo "<td>
+								<p>$info</p>
+							</td>";
 						}
 							
 						echo "<td>
 								<input class=\"kill-btn\" type=\"submit\" name=\"$kill_input_name\" value=\"\" title=\"Kill process\">
-								<!--input class=\"restart-btn\" type=\"submit\" name=\"$restart_input_name\" value=\"\" title=\"Restart process\"-->
 							</td>
 						</tr>";
 
 						if(isset($_POST[$kill_input_name])) {
 							TaskManager::kill_process(intval($pid));
-						}
-
-						if(isset($_POST[$restart_input_name])) {
-							TaskManager::restart_process(intval($pid));
+							header("Location: " . $_SERVER["REQUEST_URI"] . (
+								$has_params ? "?pn=" . $_GET["pn"] . "&refresh=true" : "?refresh=true"
+							));
 						}
 					}
 					?>

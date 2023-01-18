@@ -6,10 +6,12 @@
 	Git - github.com/rgbbeard
 */
 
-require_once "lnxutils.php";
+function get_user() {
+	return trim(getenv("USER"));
+}
 
 function contains($target, string $container) {
-    return strpos($container, $target) > -1 ? true : false;
+    return strpos($container, $target) > -1;
 }
 
 class TaskManager {
@@ -29,15 +31,15 @@ class TaskManager {
 			$process_info = preg_replace("/\s+/", ";", $process);
 			$process_info = explode(";", $process_info);
 
-			if(sizeof($process_info) > sizeof($this->processes_headers)) {
-				for($z = sizeof($this->processes_headers);$z<sizeof($process_info);$z++) {
-					$process_info[sizeof($this->processes_headers)-1] .= " " . $process_info[$z];
+			if(count($process_info) > count($this->processes_headers)) {
+				for($z = count($this->processes_headers);$z<count($process_info);$z++) {
+					$process_info[count($this->processes_headers)-1] .= " " . $process_info[$z];
 				}
 			}
 
 			$result[$y] = [];
 
-			for($x = 0;$x<sizeof($this->processes_headers);$x++) {
+			for($x = 0;$x<count($this->processes_headers);$x++) {
 				$ph = strtolower($this->processes_headers[$x]);
 				$pi = $process_info[$x];
 				$result[$y][$ph] = $pi;
@@ -48,37 +50,21 @@ class TaskManager {
 		return $result;
 	}
 
-	public function find_processes_by_name(string $process_name) {
-		$processes = shell_exec($this::ps_cmd . " | grep $process_name");
-		$processes = explode("\n", trim($processes));
+	public function find_processes_by_name(string $process_name, array $active_processes) {
+		$processes = [];
 
-		$result = [];
-
-		$y = 0;
-		foreach($processes as $process) {
-			$process_info = preg_replace("/\s+/", ";", $process);
-			$process_info = explode(";", $process_info);			
-		
-			if(sizeof($process_info) > sizeof($this->processes_headers)) {
-				for($z = sizeof($this->processes_headers);$z<sizeof($process_info);$z++) {
-					$process_info[sizeof($this->processes_headers)-1] .= " " . $process_info[$z];
-				}
+		foreach($active_processes as $process) {
+			if(contains($process_name, $process["command"])) {
+				$process["command"] = str_replace(
+					$process_name,
+					"<span class='highlight'>$process_name</span>",
+					$process["command"]
+				);
+				$processes[] = $process;
 			}
-
-			$result[$y] = [];
-
-			for($x = 0;$x<sizeof($this->processes_headers);$x++) {
-				$ph = strtolower($this->processes_headers[$x]);
-				$pi = $process_info[$x];
-				$result[$y][$ph] = $pi;
-			}
-
-			$result[$y]["command"] = str_replace($process_name, "<span class=\"highlight\">$process_name</span>", $result[$y]["command"]);
-
-			$y++;
 		}
 
-		return $result;
+		return $processes;
 	}
 
 	public static function process_is_daemon(array $process_info) {
@@ -114,10 +100,6 @@ class TaskManager {
 
 	public static function kill_process(int $pid) {
 		shell_exec("kill $pid");
-	}
-
-	public static function restart_process(int $pid) {
-		shell_exec("kill -1 $pid");
 	}
 }
 ?>
