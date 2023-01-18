@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=ProcExp
+Comment=Web-based process explorer
+TryExec=/opt/taskmanager/start.sh
+Exec=/opt/taskmanager/start.sh
+Icon=/opt/taskmanager/img/icon.png
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;System;Monitor;
+NotShowIn=KDE;
+Keywords=Monitor;System;Process;CPU;Memory;Network;History;Usage;Performance;Task;Manager;Activity;
+StartupWMClass=ProcExp
