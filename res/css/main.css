@@ -1,0 +1,112 @@
+:root {
+	--is-vital-color: #ebe;
+	--is-daemon-color: #dfdfdf;
+	--is-system-color: #77ccff;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	word-wrap: anywhere;
+	scroll-behavior: smooth;
+}
+
+.is_vital {
+	background-color: var(--is-vital-color);
+}
+
+.is_daemon {
+	background-color: var(--is-daemon-color);
+}
+
+.is_system {
+	background-color: var(--is-system-color);
+}
+
+.highlight {
+	display: inline-block;
+	padding: 5px 0;
+	color: #000;
+	background-color: #ff0;
+}
+
+.highlight::selection {
+	color: #f00;
+}
+
+span.is_vital,
+span.is_daemon,
+span.is_system,
+span.is_ordinary {
+	display: inline-block;
+	padding: 5px;
+	min-width: 50px;
+	text-align: center;
+}
+
+#scrolltop,
+#scrolldown {
+	display: inline-block;
+	position: fixed;
+	right: 5%;
+	color: #fff;
+	cursor: pointer;
+}
+
+#scrolltop {
+	bottom: 80px;
+}
+
+#scrolldown {
+	bottom: 30px;
+}
+
+table {
+	margin-top: 40px;
+	width: 100%;
+	font-size: 13px;
+	border-style: ridge;
+}
+
+table tr td {
+	min-width: 50px;
+	padding: 0 4px;
+	outline: dotted 1px #fff;
+}
+
+table thead tr {
+	background-color: #ad0;
+}
+
+table tbody tr {
+	position: relative;
+}
+
+table tbody tr::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	/* compensating outline borders + paddings + last column width */
+	right: 86px;
+}
+
+table tbody tr:hover::after {
+	background-color: #af04;
+}
+
+#legenda span {
+	font-weight: 500;
+}
+
+#search_process_container {
+	max-width: 80%;
+	margin: 25px auto;
+}

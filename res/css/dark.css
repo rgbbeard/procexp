@@ -1,0 +1,120 @@
+:root {
+    --is-vital-color: var(--matte-purple);
+    --is-daemon-color: var(--matte-dark-green);
+    --is-system-color: var(--matte-light-blue);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    word-wrap: anywhere;
+    scroll-behavior: smooth;
+    background-color: #222;
+    color: #fff;
+}
+
+.is_vital {
+    background-color: var(--is-vital-color) !important;
+    color: #fff;
+}
+
+.is_daemon {
+    background-color: var(--is-daemon-color) !important;
+    color: #fff;
+}
+
+.is_system {
+    background-color: var(--is-system-color) !important;
+    color: #fff;
+}
+
+.is_ordinary {
+    background-color: #efefef;
+    color: #000;
+}
+
+.btn-ripple {
+    border: none;
+}
+
+span.is_vital, span.is_daemon, span.is_system, span.is_ordinary {
+    display: inline-block;
+    padding: 5px;
+    min-width: 50px;
+    text-align: center;
+}
+
+#scrolltop, #scrolldown {
+    display: inline-block;
+    position: fixed;
+    right: 5%;
+    color: #fff;
+    cursor: pointer;
+}
+
+#scrolltop {
+    bottom: 80px;
+}
+
+#scrolldown {
+    bottom: 45px;
+}
+
+table {
+    margin-top: 40px;
+    width: 100%;
+    font-size: 0.7rem;
+}
+
+table tr td {
+    min-width: 50px;
+    padding: 0 2px;
+}
+
+table thead tr {
+    background-color: #800;
+}
+
+table tbody tr {
+    position: relative;
+    color: #000;
+}
+
+table tbody tr::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+table tbody tr:hover::after {
+    background-color: var(--intense-yellow);
+    opacity: 0.3;
+}
+
+#legenda span {
+    font-weight: 500;
+}
+
+#search_process_container {
+    max-width: 80%;
+    margin: 25px auto;
+}
+
+/*Custom context menus*/
+.contextmenu {
+    background-color: #444 !important;
+    box-shadow: 0 0 10px #aaa !important;
+}
+
+.contextmenu .contextmenu-item:hover {
+    background-color: #888 !important;
+}

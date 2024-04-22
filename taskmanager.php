@@ -4,23 +4,6 @@ require_once "taskmanager.class.php";
 $TaskManager = new TaskManager();
 
 $active_processes =	$TaskManager->get_active_processes();
-
-$has_params = false;
-
-if(!@empty($_GET["pn"])) {
-	$process_name = base64_decode($_GET["pn"]);
-
-	if(!empty($process_name)) {
-		$has_params = true;
-		$active_processes = $TaskManager->find_processes_by_name($process_name, $active_processes);
-	}
-}
-
-if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
-	header("Location: " . $_SERVER["PHP_SELF"] . (
-		$has_params ? "?pn=" . $_GET["pn"] : ""
-	));
-}
 ?>
 <!doctype html>
 <html>
@@ -28,8 +11,12 @@ if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
 		<meta charset="utf-8">
 		<title>Task Manager</title>
 		<link rel="shortcut icon" href="img/icon.png">
-		<link href="css/main.css" rel="stylesheet">
-		<link href="css/dark.css" rel="stylesheet">
+		<link href="/res/css/lib.css" rel="stylesheet">
+		<link href="/res/css/buttons.css" rel="stylesheet">
+		<link href="/res/css/dark.css" rel="stylesheet">
+		<script type="module" src="/res/js/prototypes.js"></script>
+		<script type="module" src="/res/js/html/prototypes.js"></script>
+		<script type="module" src="/res/js/main.js"></script>
 	</head>
 	<body>
 		<form action="" method="post">
@@ -38,44 +25,14 @@ if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
 				<span class="is_daemon">Daemons</span>
 				<span class="is_system">System</span>
 				<span class="is_ordinary">Others</span>
-				<span>
-					<b>Processes found: <?php echo sizeof($active_processes);?></b>
-				</span>
-				<span>
-					<b>Refreshing in: <i id="refresh-display">120</i>s</b>
-				</span>
-				<span id="btn-mode">Dark mode</span>
+				<p>Processes found: <?php echo sizeof($active_processes);?></p>
+				<span>Refreshing in: <i id="refresh_display">120s</i></span>
+			</div>
+			<div class="input-group" id="search_process_container">
+				<input type="text" name="search_process" id="search_process" placeholder="Find process" />
+				<label for="search_process">Find process</label>
 			</div>
 			<table>
-				<input type="text" name="search-process" placeholder="Find process" value="<?php echo @empty($_GET["pn"]) ? "" : base64_decode($_GET["pn"]);?>">
-				<br>
-				<br>
-				<div>
-					<input id="filter_vital" type="checkbox" name="filter_vital" value="0">
-					<label for="filter_vital">Filter vital processes</label>
-					<input id="filter_daemon" type="checkbox" name="filter_daemon" value="1">
-					<label for="filter_daemon">Filter daemon processes</label>
-					<input id="filter_system" type="checkbox" name="filter_system" value="2">
-					<label for="filter_system">Filter system processes</label>
-				</div>
-				<br>
-				<br>
-				<input type="submit" name="search" value="Filter processes">
-				<br>
-				<br>
-				<div>
-					<a href="<?php echo $_SERVER["REQUEST_URI"];?>">Refresh</a>
-				</div>
-				<?php
-				if(@!empty($_GET)) {
-					echo "<br>
-					<div>
-						<a href=\"http://localhost:10000/taskmanager.php\">Clear filters</a>
-					</div>";
-				}
-				?>
-				<br>
-				<br>
 				<thead>
 					<tr>
 						<?php
@@ -83,7 +40,6 @@ if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
 							echo "<td>" . strtoupper($header) . "</td>";
 						}
 						?>
-						<td>ACTIONS</td>
 					</tr>
 				</thead>
 				<tbody>
@@ -114,7 +70,7 @@ if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
 						$process_classes = implode(" ", $process_classes);
 
 						echo "<tr class=\"$process_classes\">";
-						
+
 						if(@!empty($_GET["filters"])) {
 							$processes_filters = explode(";", base64_decode($_GET["filters"]));
 
@@ -124,29 +80,16 @@ if(!@empty($_GET["refresh"]) && boolval($_GET["refresh"]) === true) {
 						}
 
 						foreach($process as $info) {
-							echo "<td>
-								<p>$info</p>
-							</td>";
+							echo "<td><p>$info</p></td>";
 						}
-							
-						echo "<td>
-								<input class=\"kill-btn\" type=\"submit\" name=\"$kill_input_name\" value=\"\" title=\"Kill process\">
-							</td>
-						</tr>";
 
-						if(isset($_POST[$kill_input_name])) {
-							TaskManager::kill_process(intval($pid));
-							header("Location: " . $_SERVER["REQUEST_URI"] . (
-								$has_params ? "?pn=" . $_GET["pn"] . "&refresh=true" : "?refresh=true"
-							));
-						}
+						echo "</tr>";
 					}
 					?>
 				<tbody>
 			</table>
 		</form>
-		<span id="scrolltop" title="Return to top">&uarr;</span>
-		<span id="scrolldown" title="Return to bottom">&darr;</span>
+		<span id="scrolltop" class="btn-ripple round error" title="Return to top">&uarr;</span>
+		<span id="scrolldown" class="btn-ripple round error" title="Return to bottom">&darr;</span>
 	</body>
 </html>
-<script type="text/javascript" src="js/main.js"></script>

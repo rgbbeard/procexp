@@ -99,7 +99,7 @@ class TaskManager {
 	}
 
 	public static function kill_process(int $pid) {
-		shell_exec("kill $pid");
+		shell_exec("kill -9 $pid");
 	}
 }
 ?>

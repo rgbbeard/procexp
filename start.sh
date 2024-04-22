@@ -1,1 +1,2 @@
-python /home/$USER/programs/taskmanager/main.py
+xdg-open "http://localhost:10000/taskmanager.php"
+php -S localhost:10000 -t /opt/taskmanager

@@ -1,0 +1,577 @@
+:root {
+    --btn-padding:0.4em 0.6em;
+    --input-padding:0.3em 0.6em;
+    --default-border-radius:3px;
+}
+
+*[ignore] {
+        visibility: hidden;
+        opacity: 0;
+}
+
+a[link] {
+        position: relative;
+        color: #555;
+        text-decoration: none !important;
+}
+
+a[link]::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -50%;
+        height: 1px;
+        background-color: transparent;
+        transition: all 0.3s;
+}
+
+a[link]:hover::after {
+        background-color: #888;
+}
+
+*[hidden] {
+        display: none !important;
+        visibility: hidden;
+}
+
+/* Forms */
+.input-group {
+        margin: 20px 0px;
+        position: relative;
+        max-width: 400px;
+}
+
+.input-group.inline {
+        display: inline-block;
+}
+
+.input-group.auto {
+        margin-left: auto;
+        margin-right: auto;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+        padding: 0.5em 0.8em;
+        outline: none;
+        border: solid 1px #aaa;
+        border-radius: 3px;
+        min-width: 200px;
+        width: 100%;
+}
+
+.input-group label {
+        padding: 2px 10px;
+        font-size: 15px;
+        line-height: 30px;
+        border-radius: var(--default-border-radius);
+        height: auto;
+}
+
+.input-group.select label {
+        position: initial;
+}
+
+.input-group input[required]:placeholder-shown,
+.input-group textarea[required]:placeholder-shown {
+        border: solid 1px #f00;
+}
+
+.input-group input[required]:placeholder-shown + label,
+.input-group textarea[required]:placeholder-shown + label {
+        color: #888;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+        color: transparent;
+}
+
+.input-group label,
+.input-group input:placeholder-shown + label,
+.input-group textarea:placeholder-shown + label {
+        position: absolute;
+        left: 0;
+        color: #999;
+        transition: all 0.3s;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        cursor: text;
+}
+
+.input-group input:focus + label,
+.input-group textarea:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group textarea:not(:placeholder-shown) + label,
+.input-group input[required]:focus:placeholder-shown + label,
+.input-group textarea[required]:focus:placeholder-shown + label {
+        top: calc((0.5em + 15px) * -1);
+        left: 0;
+        font-size: 12px;
+        line-height: 15px;
+        background-color: #bbb;
+        color: #fff;
+}
+
+.input-group input[required]:focus:placeholder-shown + label,
+.input-group textarea[required]:focus:placeholder-shown + label {
+        background-color: #ff0000 !important;
+}
+
+.input-group input[required]:focus:placeholder-shown + label,
+.input-group textarea[required]:focus:placeholder-shown + label {
+        background-color: rgba(250, 0, 0, 0.4);
+}
+
+.input-group input:not(:placeholder-shown) + label,
+.input-group textarea:not(:placeholder-shown) + label {
+        background-color: rgba(150, 150, 150, 0.5);       
+}
+
+.input-group textarea:focus + label {
+        top: -5% !important;
+}
+
+.input-group.password-input span {
+        display: inline-block;
+        min-width: 30px;
+        height: 30px;
+        background-color: #fff;
+        vertical-align: middle;
+        padding: var(--default-padding);
+        cursor: pointer;
+        background-image: url("../res/icons/eye-hidden.svg");
+        background-position: center center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        position: relative;
+}
+
+.input-group.password-input span[password-shown] {
+        background-image: url("../res/icons/eye-shown.svg");
+}
+
+/*Custom checkbox*/
+.checkbox-input.inline {
+        display:inline-block;
+        margin: 0px 5px;
+}
+
+.checkbox-input p {
+        display:inline-block;
+}
+
+.checkbox-input label {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        background-color: #e6e6e6;
+        border: solid 1px #ccc;
+        border-radius: var(--default-border-radius);
+        cursor: pointer;
+        vertical-align: middle;
+        position: relative;
+}
+
+.checkbox-input input[type="checkbox"] {
+        display: none;
+}
+
+.checkbox-input input[type="checkbox"]:checked+label {
+        background-color: #0f0;
+        border-color: transparent;
+}
+
+.checkbox-input input[type="checkbox"]:checked+label::after {
+        position: absolute;
+        content: "";
+        display: inline-block;
+        animation-name: ripple-animation;
+        animation-duration: 1s;
+        animation-iteration-count: 1;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 100px;
+}
+
+@keyframes ripple-animation {
+        from {
+                left: 100%;
+                right: 100%;
+                bottom: 100%;
+                top: 100%;
+        }
+
+        to {
+                left: -100%;
+                right: -100%;
+                bottom: -100%;
+                top: -100%;
+                opacity: 0;
+        }
+}
+
+/*Spinners*/
+spinner-ring {
+        border-style: solid;
+        animation-name: SpinRing;
+        border-width: 6px;
+        border-color: #fff;
+        margin: 0px auto;
+        animation-duration: 1s;
+        animation-delay: 0.5s;
+}
+
+spinner {
+        border-style: dotted;
+        animation-name: Spin;
+        /*Widths*/
+        border-top-width: 6px;
+        border-right-width: 4px;
+        border-bottom-width: 2px;
+        border-left-width: 1px;
+        /*Colors*/
+        border-top-color: #fff;
+        border-right-color: #ffffffaa;
+        border-bottom-color: #ffffff88;
+        border-left-color: #ffffff44;
+        animation-duration: 0.8s;
+}
+
+spinner,
+spinner-ring {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        /*Animation*/
+        animation-iteration-count: infinite;
+        animation-fill-mode: forwards;
+        transition: all 0.5s;
+}
+
+spinner.red {
+        border-top-color: #f00;
+        border-right-color: #ff0000aa;
+        border-bottom-color: #ff000088;
+        border-left-color: #ff000044;
+}
+
+spinner-ring.gold {
+        border-color: #ffaa00;
+}
+
+spinner-ring.coin {
+        background-color: #ffaa00;
+        box-shadow: 0px 0px 2px #000 inset;
+}
+
+spinner-ring.small,
+spinner-ring.medium {
+        box-shadow: none;
+}
+
+spinner-ring.medium {
+        width: 25px;
+        height: 25px;
+        animation-name: MediumSpinRing;
+}
+
+spinner-ring.small {
+        width: 20px;
+        height: 20px;
+        animation-name: SmallSpinRing;
+        background-color: transparent;
+}
+
+spinner-ring.inverse {
+        filter: invert(100%);
+}
+
+spinner-container {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        z-index: 999999999999999;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        align-items: center;
+        justify-content: center;
+}
+
+spinner-container * {
+        text-align: center;
+}
+
+/*Spinners animations*/
+@keyframes Spin {
+        from {
+                transform: rotate(0deg);
+        }
+
+        25% {
+                transform: rotate(90deg);
+        }
+
+        50% {
+                transform: rotate(180deg);
+        }
+
+        75% {
+                transform: rotate(260deg);
+        }
+
+        to {
+                transform: rotate(360deg);
+        }
+}
+
+@keyframes SpinRing {
+        from {
+                transform: rotate(0deg);
+                width: 60px;
+        }
+
+        10% {
+                width: 30px;
+        }
+
+        25% {
+                width: 15px;
+        }
+
+        50% {
+                width: 30px;
+        }
+
+        75% {
+                width: 15px;
+        }
+
+        90% {
+                width: 30px;
+        }
+
+        to {
+                transform: rotate(360deg);
+                width: 60px;
+        }
+}
+
+@keyframes MediumSpinRing {
+        from {
+                transform: rotate(0deg);
+                width: 25px;
+        }
+
+        10% {
+                width: 20px;
+        }
+
+        25% {
+                width: 18px;
+        }
+
+        50% {
+                width: 15px;
+        }
+
+        75% {
+                width: 18px;
+        }
+
+        90% {
+                width: 20px;
+        }
+
+        to {
+                transform: rotate(360deg);
+                width: 25px;
+        }
+}
+
+@keyframes SmallSpinRing {
+        from {
+                transform: rotate(0deg);
+                width: 20px;
+        }
+
+        10% {
+                width: 18px;
+        }
+
+        25% {
+                width: 15px;
+        }
+
+        50% {
+                width: 10px;
+        }
+
+        75% {
+                width: 15px;
+        }
+
+        90% {
+                width: 18px;
+        }
+
+        to {
+                transform: rotate(360deg);
+                width: 20px;
+        }
+}
+
+/*Toast*/
+.toast {
+        width: 20%;
+        height: 10%;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border-radius: 6px;
+        padding: 10px;
+        position: fixed;
+        z-index: 9999999999999;
+}
+
+.toast.left {
+        left: 15px;
+}
+
+.toast.top {
+        top: 15px;
+}
+
+.toast.bot {
+        bottom: 15px;
+}
+
+.toast.right {
+        right: 15px;
+}
+
+.toast.bot.center,
+.toast.top.center {
+        left: 40%;
+        right: 40%;
+}
+
+.toast.left.center,
+.toast.right.center {
+        top: 45%;
+        bottom: 45%;
+}
+
+.toast.success {
+        background-color: rgba(0, 255, 100, 0.7);
+        color: #000;
+}
+
+.toast.warning {
+        background-color: rgba(255, 150, 0, 0.7);
+        color: #000;
+}
+
+.toast.error {
+        background-color: rgba(255, 10, 0, 0.8);
+        color: #fff;
+}
+
+.toast>div {
+        margin: 0 auto;
+}
+
+/*Interface*/
+.interface-background {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 9999999999;
+}
+
+.interface-background .interface {
+        width: 80%;
+        height: 80%;
+        background-color: #fff;
+        border-radius: 10px;
+        overflow-x: hidden;
+}
+
+.interface-background .interface .interface-title-bar {
+        /* background-color: #0df; */
+        color: #000;
+        padding: 5px 10px;
+}
+
+.interface-background .interface .interface-title-bar * {
+        display: inline-block;
+}
+
+.interface-background .interface .interface-title-bar .interface-close-btn {
+        margin: 0px 5px;
+}
+
+.interface-background .interface .interface-body {
+        padding: 5px 10px;
+}
+
+/*Custom confirm prompt*/
+.confirm-window-background {
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 9999999999;
+}
+
+.confirm-window-background .confirm-window-content {
+        min-width: 300px;
+        margin: 0 auto;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: var(--default-border-radius);
+}
+
+.confirm-window-background .confirm-window-content .btn-ripple {
+        margin: 0 5px;
+}
+
+/*Custom context menus*/
+.contextmenu {
+        position: absolute;
+        background-color: #fff;
+        padding: 10px;
+        box-shadow: 0px 0px 10px #ccc;
+        border-radius: 10px;
+}
+
+.contextmenu .contextmenu-item {
+        display: inline-block;
+        width: 100%;
+        margin: 2px 0;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+}
+
+.contextmenu .contextmenu-item:hover {
+        background-color:#ccc;
+}
